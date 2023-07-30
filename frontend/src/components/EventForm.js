@@ -8,8 +8,10 @@ import {
 } from 'react-router-dom';
 
 import classes from './EventForm.module.css';
+import { getAuthToken } from '../util/auth';
 
 function EventForm({ method, event }) {
+
   const data = useActionData();
   const navigate = useNavigate();
   const navigation = useNavigation();
@@ -84,6 +86,8 @@ function EventForm({ method, event }) {
 export default EventForm;
 
 export async function action({ request, params }) {
+  const token = getAuthToken()
+  console.log(token);
   const method = request.method;
   const data = await request.formData();
 
@@ -105,10 +109,10 @@ export async function action({ request, params }) {
     method: method,
     headers: {
       'Content-Type': 'application/json',
+      "Authorization" : "Bearer " + token
     },
     body: JSON.stringify(eventData),
   });
-
   if (response.status === 422) {
     return response;
   }
